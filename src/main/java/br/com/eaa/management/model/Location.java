@@ -16,8 +16,4 @@ public class Location {
 
     private String name;
 
-    @ManyToMany
-    @JoinTable(name = "LocationxCaracteristic",joinColumns = @JoinColumn(name = "location_id"), inverseJoinColumns = @JoinColumn(name = "caracteristic_id"))
-    private List<Characteristic> characteristics = new ArrayList<>();
-
 }

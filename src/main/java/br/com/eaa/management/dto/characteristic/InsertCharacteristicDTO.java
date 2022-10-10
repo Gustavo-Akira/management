@@ -5,5 +5,4 @@ import lombok.Data;
 @Data
 public class InsertCharacteristicDTO {
     private String name;
-    private String value;
 }

@@ -53,13 +53,12 @@ public class WebConfigSecurity {
 
         http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 .disable().authorizeRequests().antMatchers("/").permitAll()
-                .antMatchers("/login","/recuperar/").permitAll()
+                .antMatchers("/login","/recuperar").permitAll()
                 .antMatchers(HttpMethod.OPTIONS,"/**").permitAll()
                 .anyRequest().authenticated().and().logout().logoutSuccessUrl("/index")
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                 .and().addFilterBefore(new JWTLoginFilter("/login", authenticationManager(http)), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new JWTApiAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-        http.headers().frameOptions().disable();
 
         return http.build();
     }

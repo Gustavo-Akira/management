@@ -10,5 +10,5 @@ import java.util.List;
 public class ReturnLocationDTO {
     private Long id;
     private String name;
-    private List<ReturnCharacteristicDTO> characteristicDTOS = new ArrayList<>();
+    private List<ReturnLocationxCharacteristicDTO> characteristicDTOS = new ArrayList<>();
 }

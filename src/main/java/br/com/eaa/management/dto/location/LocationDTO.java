@@ -12,5 +12,5 @@ public class LocationDTO {
 
     private String name;
 
-    private List<CharacteristicDTO> characteristicDTOS = new ArrayList<>();
+    private List<LocationxCharacteristicDTO> characteristicDTOS = new ArrayList<>();
 }

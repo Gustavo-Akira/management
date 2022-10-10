@@ -5,15 +5,23 @@ import br.com.eaa.management.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 
 @Service
 public class UserService {
     @Autowired
     private UserRepository repository;
 
+    @Autowired
+    private BCryptPasswordEncoder encoder;
+
     public boolean saveUser(User user){
+        user.setPassword(encoder.encode(user.getPassword()));
         user = repository.save(user);
+        repository.addRole(user.getId());
         return repository.findById(user.getId()).isPresent();
     }
 

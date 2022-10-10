@@ -8,4 +8,5 @@ public class ReturnUserDTO {
     private int age;
     private String name;
     private String username;
+    private String email;
 }

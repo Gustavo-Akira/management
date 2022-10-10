@@ -6,5 +6,4 @@ import lombok.Data;
 public class ReturnCharacteristicDTO {
     private Long id;
     private String name;
-    private String value;
 }

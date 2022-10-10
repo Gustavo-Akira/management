@@ -1,5 +1,6 @@
 package br.com.eaa.management.service;
 
+import br.com.eaa.management.exceptions.NotFoundResourceException;
 import br.com.eaa.management.model.Characteristic;
 import br.com.eaa.management.repository.CharacteristicRepository;
 
@@ -17,15 +18,7 @@ public class CharacteristicService {
 
 
     public Characteristic getById(Long id){
-        Optional<Characteristic> characteristic = repository.findById(id);
-        if(!characteristic.isPresent()){
-            try {
-                throw new Exception();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return characteristic.get();
+        return repository.findById(id).orElseThrow(()-> new NotFoundResourceException(id.toString()));
     }
 
     public Page<Characteristic> getAll(int page, int size){
@@ -49,9 +42,6 @@ public class CharacteristicService {
             oldCharacteristic.setName(characteristic.getName());
         }
 
-        if(characteristic.getValue() != null && !characteristic.getValue().isEmpty()){
-            oldCharacteristic.setValue(characteristic.getValue());
-        }
 
         return repository.save(oldCharacteristic);
     }
