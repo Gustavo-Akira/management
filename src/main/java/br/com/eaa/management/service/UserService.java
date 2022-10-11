@@ -27,8 +27,9 @@ public class UserService {
 
     public boolean removeUser(Long id){
         User user = getById(id);
-        repository.delete(user);
-        return repository.findById(id).isEmpty();
+        user.setActive(false);
+        repository.save(user);
+        return !repository.findById(id).get().isEnabled();
     }
 
     public User getById(Long id){

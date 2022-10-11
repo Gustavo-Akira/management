@@ -24,6 +24,7 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebConfigSecurity {
 
     private final UserDetailServiceImpl userDetailsService;
