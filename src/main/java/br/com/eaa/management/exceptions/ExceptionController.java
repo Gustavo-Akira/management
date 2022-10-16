@@ -31,7 +31,7 @@ public class ExceptionController{
         return ResponseEntity.internalServerError().body(objetoError);
     }
 
-    @ExceptionHandler({MethodArgumentNotValidException.class})
+    @ExceptionHandler({MethodArgumentNotValidException.class, ReservationException.class})
     public ResponseEntity<ErrorObject> handleBadFormatExceptions(Exception ex) {
         String msg = "";
         if (ex instanceof MethodArgumentNotValidException) {

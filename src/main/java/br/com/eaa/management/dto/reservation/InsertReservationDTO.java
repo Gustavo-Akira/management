@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 public class InsertReservationDTO {
     private Long locationId;
     private Long userId;
+
     private LocalDateTime startTime;
     private LocalDateTime endTime;
 

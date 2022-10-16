@@ -14,4 +14,5 @@ public class ReturnReservationDTO {
     private ReturnUserDTO userDTO;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
+    private Boolean isConfirmed;
 }

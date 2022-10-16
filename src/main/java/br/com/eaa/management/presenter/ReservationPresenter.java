@@ -36,6 +36,7 @@ public class ReservationPresenter {
                 throw new SecurityException("User cannot make a reservation for another user");
             }
         }
+
         return service.addReservation(dto.toReservation());
     }
 
@@ -74,5 +75,15 @@ public class ReservationPresenter {
             }
         }
         return service.removeReservation(id);
+    }
+
+    @GetMapping("/reservation/confirmation/{id}")
+    public String confirmReservation(@PathVariable Long id){
+        if(service.confirmReservation(id)){
+            Reservation reservation = service.getReservation(id);
+            return "Reserva confirmada com sucesso no ambiente " + reservation.getLocation().getName() + " começando as " +reservation.getStartTime() + "e terminando as " + reservation.getEndTime();
+        }else {
+            return "Erro durante a confirmação tente novamente";
+        }
     }
 }

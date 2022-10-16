@@ -19,6 +19,7 @@ public class Reservation {
     private User locator;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
+    private Boolean isConfirmed = false;
 
     public ReturnReservationDTO toDTO(){
         ReturnReservationDTO dto = new ReturnReservationDTO();
@@ -33,6 +34,7 @@ public class Reservation {
         dto.setId(id);
         dto.setEndTime(endTime);
         dto.setStartTime(startTime);
+        dto.setIsConfirmed(isConfirmed);
         return dto;
     }
 }
