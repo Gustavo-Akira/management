@@ -3,6 +3,8 @@ package br.com.eaa.management.presenter;
 import br.com.eaa.management.dto.reservation.InsertReservationDTO;
 import br.com.eaa.management.dto.reservation.ReservationDTO;
 import br.com.eaa.management.dto.reservation.ReturnReservationDTO;
+import br.com.eaa.management.dto.status.CreateStatusDTO;
+import br.com.eaa.management.dto.status.DeletedStatus;
 import br.com.eaa.management.exceptions.SecurityException;
 import br.com.eaa.management.model.Reservation;
 import br.com.eaa.management.security.SecurityUtility;
@@ -30,14 +32,14 @@ public class ReservationPresenter {
     }
 
     @PostMapping("/reservation")
-    public Boolean saveReservation(@RequestBody InsertReservationDTO dto, Authentication authentication){
+    public CreateStatusDTO saveReservation(@RequestBody InsertReservationDTO dto, Authentication authentication){
         if(!utility.isAdmin(authentication)){
             if(!utility.isSameUser(dto.getUserId(),authentication)){
                 throw new SecurityException("User cannot make a reservation for another user");
             }
         }
 
-        return service.addReservation(dto.toReservation());
+        return new CreateStatusDTO(service.addReservation(dto.toReservation()));
     }
 
     @GetMapping("/reservations/{id}")
@@ -67,14 +69,14 @@ public class ReservationPresenter {
     }
 
     @DeleteMapping("/reservations/{id}")
-    public Boolean deleteReservation(@PathVariable Long id, Authentication authentication){
+    public DeletedStatus deleteReservation(@PathVariable Long id, Authentication authentication){
         Reservation reservation = service.getReservation(id);
         if(!utility.isAdmin(authentication)){
             if(!utility.isSameUser(reservation.getLocator().getId(),authentication)){
                 throw new SecurityException("User cannot make a reservation for another user");
             }
         }
-        return service.removeReservation(id);
+        return new DeletedStatus(service.removeReservation(id));
     }
 
     @GetMapping("/reservation/confirmation/{id}")

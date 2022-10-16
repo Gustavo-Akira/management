@@ -1,5 +1,7 @@
 package br.com.eaa.management.presenter;
 
+import br.com.eaa.management.dto.status.CreateStatusDTO;
+import br.com.eaa.management.dto.status.DeletedStatus;
 import br.com.eaa.management.dto.user.InsertUserDTO;
 import br.com.eaa.management.dto.user.ReturnUserDTO;
 import br.com.eaa.management.dto.user.UserDTO;
@@ -52,8 +54,8 @@ public class UserPresenter {
 
     @PostMapping("user")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public boolean saveUser(@RequestBody InsertUserDTO dto){
-        return service.saveUser(modelMapper.map(dto,User.class));
+    public CreateStatusDTO saveUser(@RequestBody InsertUserDTO dto){
+        return new CreateStatusDTO(service.saveUser(modelMapper.map(dto,User.class)));
     }
 
     @PutMapping("user/{id}")
@@ -68,12 +70,12 @@ public class UserPresenter {
     }
 
     @DeleteMapping("user/{id}")
-    public boolean deleteUser(@PathVariable Long id, Authentication authentication){
+    public DeletedStatus deleteUser(@PathVariable Long id, Authentication authentication){
         if(!utility.isAdmin(authentication)){
             if(!utility.isSameUser(id,authentication)){
                 throw new SecurityException("User cannot delete another user");
             }
         }
-        return service.removeUser(id);
+        return new DeletedStatus(service.removeUser(id));
     }
 }

@@ -3,6 +3,8 @@ package br.com.eaa.management.presenter;
 import br.com.eaa.management.dto.characteristic.CharacteristicDTO;
 import br.com.eaa.management.dto.characteristic.InsertCharacteristicDTO;
 import br.com.eaa.management.dto.characteristic.ReturnCharacteristicDTO;
+import br.com.eaa.management.dto.status.CreateStatusDTO;
+import br.com.eaa.management.dto.status.DeletedStatus;
 import br.com.eaa.management.model.Characteristic;
 import br.com.eaa.management.service.CharacteristicService;
 import org.modelmapper.ModelMapper;
@@ -39,8 +41,8 @@ public class CharacteristicPresenter {
     }
 
     @PostMapping("/characteristic")
-    public ResponseEntity<Boolean> save(@RequestBody InsertCharacteristicDTO dto){
-        return ResponseEntity.ok(service.addCharacteristic(modelMapper.map(dto, Characteristic.class)));
+    public ResponseEntity<CreateStatusDTO> save(@RequestBody InsertCharacteristicDTO dto){
+        return ResponseEntity.ok(new CreateStatusDTO(service.addCharacteristic(modelMapper.map(dto, Characteristic.class))));
     }
 
     @PutMapping("/characteristic/{id}")
@@ -51,11 +53,11 @@ public class CharacteristicPresenter {
     }
 
     @DeleteMapping("/characteristic/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id){
+    public ResponseEntity<DeletedStatus> delete(@PathVariable Long id){
 
         if(!service.removeCharacteristic(id)){
             return ResponseEntity.internalServerError().build();
         }
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(new DeletedStatus(true));
     }
 }

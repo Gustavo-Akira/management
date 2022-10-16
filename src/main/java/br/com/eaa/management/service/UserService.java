@@ -37,7 +37,7 @@ public class UserService {
     }
 
     public Page<User> getAll(int page, int size){
-        return repository.findAll(Pageable.ofSize(page).withPage(size));
+        return repository.findAll(Pageable.ofSize(size).withPage(page));
     }
 
     public User updateUser(User user){

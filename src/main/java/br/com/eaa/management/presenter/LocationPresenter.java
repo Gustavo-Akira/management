@@ -1,6 +1,8 @@
 package br.com.eaa.management.presenter;
 
 import br.com.eaa.management.dto.location.*;
+import br.com.eaa.management.dto.status.CreateStatusDTO;
+import br.com.eaa.management.dto.status.DeletedStatus;
 import br.com.eaa.management.model.Location;
 import br.com.eaa.management.model.LocationxCharacteristic;
 import br.com.eaa.management.repository.LocationxCharacteristicRepository;
@@ -53,19 +55,19 @@ public class LocationPresenter {
 
 
     @PostMapping("/location")
-    public ResponseEntity<Boolean> saveLocation(@RequestBody InsertLocationDTO dto){
+    public ResponseEntity<CreateStatusDTO> saveLocation(@RequestBody InsertLocationDTO dto){
         Location location = service.add(dto.toLocation());
         dto.getCharacteristicDTOS().forEach(x->{
             locationxCharacteristicService.add(location, x);
         });
-        return ResponseEntity.ok(true);
+        return ResponseEntity.ok(new CreateStatusDTO(true));
     }
 
     @DeleteMapping("location/{id}")
-    public ResponseEntity<Boolean> deleteLocation(@PathVariable Long id){
+    public ResponseEntity<DeletedStatus> deleteLocation(@PathVariable Long id){
         Location location = service.getOne(id);
         locationxCharacteristicService.removeAllByLocation(location);
-        return ResponseEntity.ok(service.remove(id));
+        return ResponseEntity.ok(new DeletedStatus(service.remove(id)));
     }
 
     @GetMapping("location/{id}")
