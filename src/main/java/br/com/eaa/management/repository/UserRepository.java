@@ -1,6 +1,8 @@
 package br.com.eaa.management.repository;
 
 import br.com.eaa.management.model.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -12,4 +14,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Modifying
     @Query(value = "insert into usuario_role (usuario_id, role_id) values (?1, (select id from role where role_name = 'ROLE_USER'));", nativeQuery = true)
     void addRole(Long idUsuario);
+
+    Page<User> findAllByIsActive(Pageable page, boolean isActive);
 }

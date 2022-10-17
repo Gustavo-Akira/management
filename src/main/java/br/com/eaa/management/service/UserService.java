@@ -24,6 +24,7 @@ public class UserService {
     public boolean saveUser(User user){
         user.setPassword(encoder.encode(user.getPassword()));
         user.setActive(true);
+        System.out.println(user);
         user = repository.save(user);
         repository.addRole(user.getId());
         return repository.findById(user.getId()).isPresent();
@@ -38,14 +39,16 @@ public class UserService {
 
     public User getById(Long id){
         User user = repository.findById(id).orElseThrow(()->new NotFoundResourceException("User not found"));
+        System.out.println(user);
         if(!user.isActive()){
-            throw new NotFoundResourceException("User not Found");
+            throw new NotFoundResourceException("User not Activated");
         }
         return user;
     }
 
     public Page<User> getAll(int page, int size){
-        return new PageImpl<>( repository.findAll(Pageable.ofSize(size).withPage(page)).stream().filter(user -> user.isActive()).collect(Collectors.toList()));
+
+        return repository.findAllByIsActive(Pageable.ofSize(size).withPage(page), true);
     }
 
     public User updateUser(User user){
