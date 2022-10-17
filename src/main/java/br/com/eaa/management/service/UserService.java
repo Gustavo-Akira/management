@@ -23,6 +23,7 @@ public class UserService {
 
     public boolean saveUser(User user){
         user.setPassword(encoder.encode(user.getPassword()));
+        user.setActive(true);
         user = repository.save(user);
         repository.addRole(user.getId());
         return repository.findById(user.getId()).isPresent();
