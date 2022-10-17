@@ -54,7 +54,7 @@ public class ReservationService {
 
     public Reservation updateReservation(Reservation reservation){
         Reservation old = getReservation(reservation.getId());
-        removeReservation(reservation.getId());
+
         if(reservation.getEndTime() != null){
             old.setEndTime(reservation.getEndTime());
         }
@@ -68,10 +68,10 @@ public class ReservationService {
             old.setLocator(userService.getById(reservation.getLocator().getId()));
         }
         if(!hasReservation(reservation) && isBeforeEnd(reservation)) {
+            removeReservation(reservation.getId());
             Reservation updated =  repository.save(old);
             updated.setLocation(service.getOne(updated.getLocation().getId()));
             updated.setLocator(userService.getById(updated.getLocator().getId()));
-            System.out.println(updated);
             return updated;
         }
 
@@ -94,12 +94,14 @@ public class ReservationService {
         List<Reservation> reservations = repository.findAllByLocationAndStartTimeAndEndtime(reservation.getLocation(), reservation.getStartTime().toLocalDate().atStartOfDay(), reservation.getStartTime().plusDays(1L).toLocalDate().atStartOfDay());
         AtomicBoolean y = new AtomicBoolean(false);
         reservations.forEach(x->{
-            if(x.getStartTime().isBefore(reservation.getStartTime()) && x.getEndTime().isAfter(reservation.getStartTime())){
-                y.set(true);
-            }else if(x.getStartTime().isAfter(reservation.getStartTime()) && x.getStartTime().isBefore(reservation.getEndTime())){
-                y.set(true);
-            }else if(x.getStartTime().equals(reservation.getStartTime()) && x.getEndTime().equals(reservation.getEndTime())){
-                y.set(true);
+            if(x.getId() != reservation.getId()) {
+                if (x.getStartTime().isBefore(reservation.getStartTime()) && x.getEndTime().isAfter(reservation.getStartTime())) {
+                    y.set(true);
+                } else if (x.getStartTime().isAfter(reservation.getStartTime()) && x.getStartTime().isBefore(reservation.getEndTime())) {
+                    y.set(true);
+                } else if (x.getStartTime().equals(reservation.getStartTime()) && x.getEndTime().equals(reservation.getEndTime())) {
+                    y.set(true);
+                }
             }
         });
         return y.get();
