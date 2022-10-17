@@ -28,6 +28,7 @@ public class ReservationDTO {
         reservation.setLocation(location);
         reservation.setStartTime(startTime);
         reservation.setEndTime(endTime);
+        reservation.setId(id);
         return reservation;
     }
 }

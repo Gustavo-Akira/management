@@ -42,7 +42,7 @@ public class ReservationPresenter {
         return new CreateStatusDTO(service.addReservation(dto.toReservation()));
     }
 
-    @GetMapping("/reservations/{id}")
+    @GetMapping("/reservation/{id}")
     public ReturnReservationDTO getReturnReservationDTO(@PathVariable Long id){
         return service.getReservation(id).toDTO();
     }
@@ -52,7 +52,7 @@ public class ReservationPresenter {
         return service.getReservations(page).map(x->x.toDTO());
     }
 
-    @PutMapping("/reservations/{id}")
+    @PutMapping("/reservation/{id}")
     public ReturnReservationDTO updateReservation(@PathVariable Long id, @RequestBody ReservationDTO dto, Authentication authentication){
         dto.setId(id);
         Reservation reservation = service.getReservation(id);
@@ -65,10 +65,11 @@ public class ReservationPresenter {
                 }
             }
         }
+
         return service.updateReservation(dto.toReservation()).toDTO();
     }
 
-    @DeleteMapping("/reservations/{id}")
+    @DeleteMapping("/reservation/{id}")
     public DeletedStatus deleteReservation(@PathVariable Long id, Authentication authentication){
         Reservation reservation = service.getReservation(id);
         if(!utility.isAdmin(authentication)){

@@ -30,7 +30,7 @@ public class LocationxCharacteristicService {
         List<LocationxCharacteristic> locationxCharacteristics = repository.findAllByLocation(location);
         return locationxCharacteristics;
     }
-
+    @Transactional
     public void update(List<LocationxCharacteristicDTO> locationxCharacteristics, Location location){
         if(locationxCharacteristics.isEmpty()){
             repository.deleteAllByLocation(location);

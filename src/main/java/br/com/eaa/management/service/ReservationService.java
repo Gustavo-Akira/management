@@ -54,6 +54,7 @@ public class ReservationService {
 
     public Reservation updateReservation(Reservation reservation){
         Reservation old = getReservation(reservation.getId());
+        removeReservation(reservation.getId());
         if(reservation.getEndTime() != null){
             old.setEndTime(reservation.getEndTime());
         }
@@ -67,11 +68,21 @@ public class ReservationService {
             old.setLocator(userService.getById(reservation.getLocator().getId()));
         }
         if(!hasReservation(reservation) && isBeforeEnd(reservation)) {
-            return repository.save(old);
+            Reservation updated =  repository.save(old);
+            updated.setLocation(service.getOne(updated.getLocation().getId()));
+            updated.setLocator(userService.getById(updated.getLocator().getId()));
+            System.out.println(updated);
+            return updated;
         }
 
+        if(!isBeforeEnd(reservation)){
+            throw new ReservationException("Reservation cannot start after it ends");
+        }
+        if(hasReservation(reservation)){
+            throw new ReservationException("The ambient is already reserved at this hour");
+        }
 
-        return null;
+        return new Reservation();
     }
 
     public boolean removeReservation(Long id){

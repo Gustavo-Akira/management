@@ -1,14 +1,17 @@
 package br.com.eaa.management.service;
 
+import br.com.eaa.management.exceptions.NotFoundResourceException;
 import br.com.eaa.management.model.User;
 import br.com.eaa.management.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -33,11 +36,15 @@ public class UserService {
     }
 
     public User getById(Long id){
-        return repository.findById(id).orElseThrow();
+        User user = repository.findById(id).orElseThrow(()->new NotFoundResourceException("User not found"));
+        if(!user.isActive()){
+            throw new NotFoundResourceException("User not Found");
+        }
+        return user;
     }
 
     public Page<User> getAll(int page, int size){
-        return repository.findAll(Pageable.ofSize(size).withPage(page));
+        return new PageImpl<>( repository.findAll(Pageable.ofSize(size).withPage(page)).stream().filter(user -> user.isActive()).collect(Collectors.toList()));
     }
 
     public User updateUser(User user){
