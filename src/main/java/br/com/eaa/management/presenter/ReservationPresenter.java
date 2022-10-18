@@ -5,6 +5,7 @@ import br.com.eaa.management.dto.reservation.ReservationDTO;
 import br.com.eaa.management.dto.reservation.ReturnReservationDTO;
 import br.com.eaa.management.dto.status.CreateStatusDTO;
 import br.com.eaa.management.dto.status.DeletedStatus;
+import br.com.eaa.management.dto.status.HasReservationStatus;
 import br.com.eaa.management.exceptions.SecurityException;
 import br.com.eaa.management.model.Reservation;
 import br.com.eaa.management.security.SecurityUtility;
@@ -88,5 +89,10 @@ public class ReservationPresenter {
         }else {
             return "Erro durante a confirmação tente novamente";
         }
+    }
+
+    @PostMapping("/reservation/reservation/have")
+    public HasReservationStatus getReservation(@RequestBody InsertReservationDTO dto){
+        return new HasReservationStatus( service.haveReservation(dto.toReservation()));
     }
 }

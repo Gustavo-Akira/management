@@ -1,5 +1,6 @@
 package br.com.eaa.management.service;
 
+import br.com.eaa.management.dto.reservation.InsertReservationDTO;
 import br.com.eaa.management.exceptions.NotFoundResourceException;
 import br.com.eaa.management.exceptions.ReservationException;
 import br.com.eaa.management.model.Reservation;
@@ -90,7 +91,12 @@ public class ReservationService {
         return repository.findById(id).isEmpty();
     }
 
-    public boolean hasReservation(Reservation reservation){
+    public boolean haveReservation(Reservation reservation){
+        reservation.setLocation(service.getOne(reservation.getLocation().getId()));
+        return hasReservation(reservation);
+    }
+
+    private boolean hasReservation(Reservation reservation){
         List<Reservation> reservations = repository.findAllByLocationAndStartTimeAndEndtime(reservation.getLocation(), reservation.getStartTime().toLocalDate().atStartOfDay(), reservation.getStartTime().plusDays(1L).toLocalDate().atStartOfDay());
         AtomicBoolean y = new AtomicBoolean(false);
         reservations.forEach(x->{

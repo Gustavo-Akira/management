@@ -1,5 +1,7 @@
 package br.com.eaa.management.presenter;
 
+import br.com.eaa.management.dto.characteristic.CharacteristicDTO;
+import br.com.eaa.management.dto.characteristic.CharacteristicFilterDTO;
 import br.com.eaa.management.dto.location.*;
 import br.com.eaa.management.dto.status.CreateStatusDTO;
 import br.com.eaa.management.dto.status.DeletedStatus;
@@ -17,6 +19,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
@@ -41,6 +45,23 @@ public class LocationPresenter {
             dto.setCharacteristicDTOS(locationxCharacteristicService.getAllByLocation(location).stream().map(x->x.toReturnLocationxCharacteristicDTO()).collect(Collectors.toList()));
             return dto;
         });
+    }
+
+    @GetMapping("/locations/filter")
+    public List<ReturnLocationDTO> getLocation(@RequestParam(name="name", required = false) String name, @RequestParam(name= "characteristic",required = false) CharacteristicFilterDTO characteristic){
+        List<ReturnLocationDTO> returnLocationDTOS = new ArrayList<>();
+        if(name != null){
+            returnLocationDTOS.add(modelMapper.map(service.getByFilter(name),ReturnLocationDTO.class));
+        }else if( characteristic != null){
+            returnLocationDTOS = service.getAllWithoutPage().stream().filter(x-> locationxCharacteristicService.getAllByLocation(x).stream().anyMatch(locationxCharacteristic-> locationxCharacteristic.getCharacteristic().getName().equals(characteristic.getName()) && locationxCharacteristic.getValue().equals(characteristic.getValue()))).map(x->modelMapper.map(x,ReturnLocationDTO.class)).collect(Collectors.toList());
+        }else{
+            return null;
+        }
+        returnLocationDTOS.stream().map(x->{
+            x.setCharacteristicDTOS(locationxCharacteristicService.getAllByLocation(modelMapper.map(x,Location.class)).stream().map(locationxCharacteristic -> locationxCharacteristic.toReturnLocationxCharacteristicDTO()).collect(Collectors.toList()));
+            return x;
+        });
+        return returnLocationDTOS;
     }
 
     @GetMapping("/locations/{page}")
