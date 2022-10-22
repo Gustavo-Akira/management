@@ -14,6 +14,7 @@ import br.com.eaa.management.service.LocationxCharacteristicService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -48,12 +49,18 @@ public class LocationPresenter {
     }
 
     @GetMapping("/locations/filter")
-    public List<ReturnLocationDTO> getLocation(@RequestParam(name="name", required = false) String name, @RequestParam(name= "characteristic",required = false) CharacteristicFilterDTO characteristic){
+    public Page<ReturnLocationDTO> getLocation(@RequestParam(name="name", required = false) String name, @RequestParam(name= "characteristic",required = false) CharacteristicFilterDTO characteristic){
         List<ReturnLocationDTO> returnLocationDTOS = new ArrayList<>();
         if(name != null){
             returnLocationDTOS.add(modelMapper.map(service.getByFilter(name),ReturnLocationDTO.class));
         }else if( characteristic != null){
-            returnLocationDTOS = service.getAllWithoutPage().stream().filter(x-> locationxCharacteristicService.getAllByLocation(x).stream().anyMatch(locationxCharacteristic-> locationxCharacteristic.getCharacteristic().getName().equals(characteristic.getName()) && locationxCharacteristic.getValue().equals(characteristic.getValue()))).map(x->modelMapper.map(x,ReturnLocationDTO.class)).collect(Collectors.toList());
+            returnLocationDTOS = service.getAllWithoutPage().stream().filter(
+                    x-> locationxCharacteristicService.getAllByLocation(x)
+                            .stream()
+                            .anyMatch(
+                                    locationxCharacteristic-> locationxCharacteristic.getCharacteristic().getName().equals(characteristic.getName())
+                                            && locationxCharacteristic.getValue().equals(characteristic.getValue())))
+                    .map(x->modelMapper.map(x,ReturnLocationDTO.class)).collect(Collectors.toList());
         }else{
             return null;
         }
@@ -61,7 +68,7 @@ public class LocationPresenter {
             x.setCharacteristicDTOS(locationxCharacteristicService.getAllByLocation(modelMapper.map(x,Location.class)).stream().map(locationxCharacteristic -> locationxCharacteristic.toReturnLocationxCharacteristicDTO()).collect(Collectors.toList()));
             return x;
         });
-        return returnLocationDTOS;
+        return new PageImpl<>(returnLocationDTOS);
     }
 
     @GetMapping("/locations/{page}")
