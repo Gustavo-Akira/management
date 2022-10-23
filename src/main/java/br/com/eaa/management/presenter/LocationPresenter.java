@@ -49,7 +49,7 @@ public class LocationPresenter {
     }
 
     @GetMapping("/locations/filter")
-    public Page<ReturnLocationDTO> getLocation(@RequestParam(name="name", required = false) String name, @RequestParam(name= "characteristic",required = false) CharacteristicFilterDTO characteristic){
+    public Page<ReturnLocationDTO> getLocation(@RequestParam(name="name", required = false) String name, @RequestParam(name= "characteristic",required = false) Integer  characteristic){
         List<ReturnLocationDTO> returnLocationDTOS = new ArrayList<>();
         if(name != null){
             returnLocationDTOS.add(modelMapper.map(service.getByFilter(name),ReturnLocationDTO.class));
@@ -58,8 +58,8 @@ public class LocationPresenter {
                     x-> locationxCharacteristicService.getAllByLocation(x)
                             .stream()
                             .anyMatch(
-                                    locationxCharacteristic-> locationxCharacteristic.getCharacteristic().getName().equals(characteristic.getName())
-                                            && locationxCharacteristic.getValue().equals(characteristic.getValue())))
+                                    locationxCharacteristic-> locationxCharacteristic.getCharacteristic().getName().equals("computers")
+                                            && locationxCharacteristic.getValue().equals(characteristic.toString())))
                     .map(x->modelMapper.map(x,ReturnLocationDTO.class)).collect(Collectors.toList());
         }else{
             return null;

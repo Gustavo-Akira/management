@@ -1,5 +1,6 @@
 package br.com.eaa.management.exceptions;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
@@ -79,6 +80,13 @@ public class ExceptionController{
         ErrorObject objetoError = new ErrorObject();
         objetoError.setError(ex.getMessage());
         objetoError.setCode(HttpStatus.NOT_FOUND.value()+ "=>" +HttpStatus.NOT_FOUND.getReasonPhrase());
+        return new ResponseEntity<>(objetoError, HttpStatus.NOT_FOUND);
+    }
+    @ExceptionHandler({ExpiredJwtException.class})
+    public ResponseEntity<ErrorObject> JwtException(Exception ex){
+        ErrorObject objetoError = new ErrorObject();
+        objetoError.setError(ex.getMessage());
+        objetoError.setCode(HttpStatus.FORBIDDEN.value()+ "=>" +HttpStatus.FORBIDDEN.getReasonPhrase());
         return new ResponseEntity<>(objetoError, HttpStatus.NOT_FOUND);
     }
 }
