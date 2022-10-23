@@ -58,14 +58,14 @@ public class LocationPresenter {
                     x-> locationxCharacteristicService.getAllByLocation(x)
                             .stream()
                             .anyMatch(
-                                    locationxCharacteristic-> locationxCharacteristic.getCharacteristic().getName().equals("computers")
+                                    locationxCharacteristic-> locationxCharacteristic.getCharacteristic().getName().equals("amountOfMachines")
                                             && locationxCharacteristic.getValue().equals(characteristic.toString())))
                     .map(x->modelMapper.map(x,ReturnLocationDTO.class)).collect(Collectors.toList());
         }else{
             return null;
         }
         returnLocationDTOS.stream().map(x->{
-            x.setCharacteristicDTOS(locationxCharacteristicService.getAllByLocation(modelMapper.map(x,Location.class)).stream().map(locationxCharacteristic -> locationxCharacteristic.toReturnLocationxCharacteristicDTO()).collect(Collectors.toList()));
+            x.setCharacteristicDTOS(locationxCharacteristicService.getAllByLocation(modelMapper.map(x,Location.class)).stream().map(LocationxCharacteristic::toReturnLocationxCharacteristicDTO).collect(Collectors.toList()));
             return x;
         });
         return new PageImpl<>(returnLocationDTOS);
@@ -75,7 +75,7 @@ public class LocationPresenter {
     public Page<ReturnLocationDTO> getLocations(@PathVariable int page){
         return service.getAll(page).map(location->{
             ReturnLocationDTO dto = modelMapper.map(location,ReturnLocationDTO.class);
-            dto.setCharacteristicDTOS(locationxCharacteristicService.getAllByLocation(location).stream().map(x->x.toReturnLocationxCharacteristicDTO()).collect(Collectors.toList()));
+            dto.setCharacteristicDTOS(locationxCharacteristicService.getAllByLocation(location).stream().map(LocationxCharacteristic::toReturnLocationxCharacteristicDTO).collect(Collectors.toList()));
             return dto;
         });
     }
@@ -102,7 +102,7 @@ public class LocationPresenter {
     public ReturnLocationDTO getLocation(@PathVariable Long id){
         Location location = service.getOne(id);
         ReturnLocationDTO dto = modelMapper.map(location, ReturnLocationDTO.class);
-        dto.setCharacteristicDTOS(locationxCharacteristicService.getAllByLocation(location).stream().map(x->x.toReturnLocationxCharacteristicDTO()).collect(Collectors.toList()));
+        dto.setCharacteristicDTOS(locationxCharacteristicService.getAllByLocation(location).stream().map(LocationxCharacteristic::toReturnLocationxCharacteristicDTO).collect(Collectors.toList()));
         return dto;
     }
 
@@ -112,7 +112,7 @@ public class LocationPresenter {
         Location location = service.update(modelMapper.map(locationDTO,Location.class));
         locationxCharacteristicService.update(locationDTO.getCharacteristicDTOS(),modelMapper.map(locationDTO,Location.class));
         ReturnLocationDTO dto =modelMapper.map(location,ReturnLocationDTO.class);
-        dto.setCharacteristicDTOS(locationxCharacteristicService.getAllByLocation(location).stream().map(x->x.toReturnLocationxCharacteristicDTO()).collect(Collectors.toList()));
+        dto.setCharacteristicDTOS(locationxCharacteristicService.getAllByLocation(location).stream().map(LocationxCharacteristic::toReturnLocationxCharacteristicDTO).collect(Collectors.toList()));
         return dto;
     }
 
