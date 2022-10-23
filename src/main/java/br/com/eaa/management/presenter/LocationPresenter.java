@@ -64,9 +64,8 @@ public class LocationPresenter {
         }else{
             return null;
         }
-        returnLocationDTOS.stream().map(x->{
+        returnLocationDTOS.stream().forEach(x->{
             x.setCharacteristicDTOS(locationxCharacteristicService.getAllByLocation(modelMapper.map(x,Location.class)).stream().map(LocationxCharacteristic::toReturnLocationxCharacteristicDTO).collect(Collectors.toList()));
-            return x;
         });
         return new PageImpl<>(returnLocationDTOS);
     }
