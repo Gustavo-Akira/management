@@ -4,6 +4,7 @@ import br.com.eaa.management.dto.reservation.InsertReservationDTO;
 import br.com.eaa.management.exceptions.NotFoundResourceException;
 import br.com.eaa.management.exceptions.ReservationException;
 import br.com.eaa.management.model.Reservation;
+import br.com.eaa.management.model.User;
 import br.com.eaa.management.repository.ReservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -94,6 +95,10 @@ public class ReservationService {
     public boolean haveReservation(Reservation reservation){
         reservation.setLocation(service.getOne(reservation.getLocation().getId()));
         return hasReservation(reservation);
+    }
+
+    public Page<Reservation> getReservationsByUser(Integer page, User user){
+        return repository.findAllByLocator(user,Pageable.ofSize(5).withPage(page));
     }
 
     private boolean hasReservation(Reservation reservation){

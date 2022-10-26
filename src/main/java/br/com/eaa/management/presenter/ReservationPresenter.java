@@ -95,4 +95,9 @@ public class ReservationPresenter {
     public HasReservationStatus getReservation(@RequestBody InsertReservationDTO dto){
         return new HasReservationStatus( service.haveReservation(dto.toReservation()));
     }
+
+    @GetMapping("/reservations/me/{page}")
+    public Page<ReturnReservationDTO> getReservationsByUser(@PathVariable Integer page,Authentication authentication){
+        return service.getReservationsByUser(page,utility.getUser(authentication)).map(Reservation::toDTO);
+    }
 }

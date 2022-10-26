@@ -18,6 +18,10 @@ public class SecurityUtility {
     }
 
     public boolean isSameUser(Long id, Authentication authentication){
-        return repository.findUserByUsername(authentication.getPrincipal().toString()).getId().equals(id);
+        return this.getUser(authentication).getId().equals(id);
+    }
+
+    public User getUser(Authentication authentication){
+        return repository.findUserByUsername(authentication.getPrincipal().toString());
     }
 }
