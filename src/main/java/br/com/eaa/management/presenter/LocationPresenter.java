@@ -15,6 +15,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,7 +27,6 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1")
-@PreAuthorize("hasRole('ROLE_ADMIN')")
 public class LocationPresenter {
 
     @Autowired
@@ -82,6 +82,7 @@ public class LocationPresenter {
 
 
     @PostMapping("/location")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<CreateStatusDTO> saveLocation(@RequestBody InsertLocationDTO dto){
         Location location = service.add(dto.toLocation());
         dto.getCharacteristicDTOS().forEach(x->{
@@ -91,6 +92,7 @@ public class LocationPresenter {
     }
 
     @DeleteMapping("location/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<DeletedStatus> deleteLocation(@PathVariable Long id){
         Location location = service.getOne(id);
         locationxCharacteristicService.removeAllByLocation(location);
@@ -106,6 +108,7 @@ public class LocationPresenter {
     }
 
     @PutMapping("location/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ReturnLocationDTO updateLocation(@RequestBody LocationDTO locationDTO,@PathVariable Long id){
         locationDTO.setId(id);
         Location location = service.update(modelMapper.map(locationDTO,Location.class));
