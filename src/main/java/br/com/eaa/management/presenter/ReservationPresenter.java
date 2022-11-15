@@ -35,11 +35,11 @@ public class ReservationPresenter {
     @PostMapping("/reservation")
     public CreateStatusDTO saveReservation(@RequestBody InsertReservationDTO dto, Authentication authentication){
         if(!utility.isAdmin(authentication)){
-            if(!utility.isSameUser(dto.getUserId(),authentication)){
+            if(!utility.isSameUser(dto.getUserId(),authentication) && dto.getUserId() != null){
                 throw new SecurityException("User cannot make a reservation for another user");
             }
         }
-
+        dto.setUserId(utility.getUser(authentication).getId());
         return new CreateStatusDTO(service.addReservation(dto.toReservation()));
     }
 
@@ -50,7 +50,7 @@ public class ReservationPresenter {
 
     @GetMapping("/reservations/{page}")
     public Page<ReturnReservationDTO> getReturnReservationDTOS(@PathVariable int page){
-        return service.getReservations(page).map(x->x.toDTO());
+        return service.getReservations(page).map(Reservation::toDTO);
     }
 
     @PutMapping("/reservation/{id}")
