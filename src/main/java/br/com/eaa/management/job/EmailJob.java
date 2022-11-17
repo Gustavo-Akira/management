@@ -37,8 +37,8 @@ public class EmailJob {
         reservations.forEach(x->{
             EmailDTO dto = new EmailDTO();
             dto.setRecipient(x.getLocator().getEmail());
-            dto.setMsgBody("Por favor clique no link abaixo http://localhost:8083/api/v1/reservation/confirmation/"+x.getId());
-            dto.setSubject("http://localhost:8083/api/v1/reservation/confirmation/"+x.getId());
+            dto.setMsgBody("Por favor clique no link abaixo https://lab-tech.herokuapp.com/api/v1/reservation/confirmation/"+x.getId());
+            dto.setSubject("https://lab-tech.herokuapp.com/api/v1/reservation/confirmation/"+x.getId());
             try {
                 service.sendSimpleMail(dto);
             } catch (Exception e) {
